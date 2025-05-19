@@ -1,0 +1,10 @@
+
+services:
+  - type: web
+    name: functional-nutrition-bot
+    env: python
+    buildCommand: ""
+    startCommand: bash start.sh
+    envVars:
+      - key: API_TOKEN
+        value: ВСТАВЬ_СЮДА_ТОКЕН_ОТ_BOTFATHER
