@@ -93,11 +93,14 @@ async def btn4_handler(message: types.Message):
 
 @dp.message_handler(Text(equals=":"))
 async def show_submenu_1(message: types.Message):
-    await message.answer(READY_TEXT, reply_markup=submenu_1)
+    await message.answer(READY_TEXT, reply_markup=step_menu(":"), protect_content=True)
     
-    # Отправка картинки сразу после текста
-    photo = InputFile("img/pitanie.jpg")  # путь к файлу
-    await message.answer_photo(photo, caption="Таблица", protect_content=True)
+    # Отправка картинки (используем photo.jpg из корня репозитория)
+    try:
+        photo = InputFile("photo.jpg")  # Указываем правильный путь
+        await message.answer_photo(photo, caption="Таблица", protect_content=True)
+    except FileNotFoundError:
+        await message.answer("Ошибка: файл photo.jpg не найден. Убедитесь, что он загружен в репозиторий.", protect_content=True)
     
 @dp.message_handler(Text(equals=BTN_5))
 async def btn5_handler(message: types.Message):
@@ -105,15 +108,43 @@ async def btn5_handler(message: types.Message):
 
 @dp.message_handler(Text(equals=CASE_1_BTN))
 async def case1_handler(message: types.Message):
-    await message.answer(CASE_1_TEXT, reply_markup=case_options_menu(), protect_content=True)
+    # Разделяем текст на две части
+    half_length = len(CASE_1_TEXT) // 2
+    split_index = CASE_1_TEXT.rfind('\n', 0, half_length)  # Ищем ближайший перенос строки до середины
+    if split_index == -1:  # Если нет переноса строки, просто делим пополам
+        split_index = half_length
+    part1 = CASE_1_TEXT[:split_index]
+    part2 = CASE_1_TEXT[split_index:]
+
+    # Отправляем два сообщения последовательно
+    await message.answer(part1, reply_markup=case_options_menu(), protect_content=True)
+    await message.answer(part2, protect_content=True)
 
 @dp.message_handler(Text(equals=CASE_2_BTN))
 async def case2_handler(message: types.Message):
-    await message.answer(CASE_2_TEXT, reply_markup=case_options_menu(), protect_content=True)
+    # Разделяем текст на две части
+    half_length = len(CASE_2_TEXT) // 2
+    split_index = CASE_2_TEXT.rfind('\n', 0, half_length)
+    if split_index == -1:
+        split_index = half_length
+    part1 = CASE_2_TEXT[:split_index]
+    part2 = CASE_2_TEXT[split_index:]
+
+    await message.answer(part1, reply_markup=case_options_menu(), protect_content=True)
+    await message.answer(part2, protect_content=True)
 
 @dp.message_handler(Text(equals=CASE_3_BTN))
 async def case3_handler(message: types.Message):
-    await message.answer(CASE_3_TEXT, reply_markup=case_options_menu(), protect_content=True)
+    # Разделяем текст на две части
+    half_length = len(CASE_3_TEXT) // 2
+    split_index = CASE_3_TEXT.rfind('\n', 0, half_length)
+    if split_index == -1:
+        split_index = half_length
+    part1 = CASE_3_TEXT[:split_index]
+    part2 = CASE_3_TEXT[split_index:]
+
+    await message.answer(part1, reply_markup=case_options_menu(), protect_content=True)
+    await message.answer(part2, protect_content=True)
 
 @dp.message_handler(Text(equals=OTHER_CASE_BTN))
 async def other_case_handler(message: types.Message):
