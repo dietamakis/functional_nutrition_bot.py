@@ -6,7 +6,7 @@ import logging
 logging.basicConfig(level=logging.INFO)  # Настройка логирования
 
 from aiogram import Bot, Dispatcher
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InputFile, ReplyKeyboardRemove
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InputFile, ReplyKeyboardRemove, Message
 from aiogram.utils import executor
 from aiogram.dispatcher.filters import Text
 
@@ -76,27 +76,27 @@ def back_menu():
 
 # --- Хендлеры ---
 @dp.message_handler(commands=['start'])
-async def start_handler(message: types.Message):
+async def start_handler(message: Message):
     await message.answer(WELCOME_TEXT, reply_markup=main_menu(), protect_content=True)
 
 @dp.message_handler(Text(equals=BTN_1))
-async def btn1_handler(message: types.Message):
+async def btn1_handler(message: Message):
     await message.answer(FUNC_NUTRITION_TEXT, reply_markup=step_menu(BTN_2), protect_content=True)
 
 @dp.message_handler(Text(equals=BTN_2))
-async def btn2_handler(message: types.Message):
+async def btn2_handler(message: Message):
     await message.answer(SELECTIVE_EATING_TEXT, reply_markup=step_menu(BTN_3), protect_content=True)
 
 @dp.message_handler(Text(equals=BTN_3))
-async def btn3_handler(message: types.Message):
+async def btn3_handler(message: Message):
     await message.answer(WHAT_TO_DO_TEXT, reply_markup=step_menu(BTN_4), protect_content=True)
 
 @dp.message_handler(Text(equals=BTN_4))
-async def btn4_handler(message: types.Message):
+async def btn4_handler(message: Message):
     await message.answer(READY_TEXT, reply_markup=step_menu(BTN_5), protect_content=True)
 
 @dp.message_handler(Text(equals=":"))
-async def show_submenu_1(message: types.Message):
+async def show_submenu_1(message: Message):
     await message.answer(READY_TEXT, reply_markup=step_menu(":"), protect_content=True)
     
     # Добавляем отладочную информацию
@@ -113,13 +113,13 @@ async def show_submenu_1(message: types.Message):
     except Exception as e:
         logging.error(f"Неизвестная ошибка при отправке фото: {e}")
         await message.answer(f"Ошибка при отправке фото: {e}", protect_content=True)
-    
+
 @dp.message_handler(Text(equals=BTN_5))
-async def btn5_handler(message: types.Message):
+async def btn5_handler(message: Message):
     await message.answer(CHOOSE_CASE_TEXT, reply_markup=case_menu(), protect_content=True)
 
 @dp.message_handler(Text(equals=CASE_1_BTN))
-async def case1_handler(message: types.Message):
+async def case1_handler(message: Message):
     # Разделяем текст на две части
     half_length = len(CASE_1_TEXT) // 2
     split_index = CASE_1_TEXT.rfind('\n', 0, half_length)  # Ищем ближайший перенос строки до середины
@@ -133,7 +133,7 @@ async def case1_handler(message: types.Message):
     await message.answer(part2, protect_content=True)
 
 @dp.message_handler(Text(equals=CASE_2_BTN))
-async def case2_handler(message: types.Message):
+async def case2_handler(message: Message):
     # Разделяем текст на две части
     half_length = len(CASE_2_TEXT) // 2
     split_index = CASE_2_TEXT.rfind('\n', 0, half_length)
@@ -146,7 +146,7 @@ async def case2_handler(message: types.Message):
     await message.answer(part2, protect_content=True)
 
 @dp.message_handler(Text(equals=CASE_3_BTN))
-async def case3_handler(message: types.Message):
+async def case3_handler(message: Message):
     # Разделяем текст на две части
     half_length = len(CASE_3_TEXT) // 2
     split_index = CASE_3_TEXT.rfind('\n', 0, half_length)
@@ -159,23 +159,23 @@ async def case3_handler(message: types.Message):
     await message.answer(part2, protect_content=True)
 
 @dp.message_handler(Text(equals=OTHER_CASE_BTN))
-async def other_case_handler(message: types.Message):
+async def other_case_handler(message: Message):
     await message.answer(CHOOSE_CASE_TEXT, reply_markup=case_menu(), protect_content=True)
 
 @dp.message_handler(Text(equals=FAQ_BTN))
-async def faq_handler(message: types.Message):
+async def faq_handler(message: Message):
     await message.answer(FAQ_TEXT, reply_markup=back_menu(), protect_content=True)
 
 @dp.message_handler(Text(equals=CONTACTS_BTN))
-async def contacts_handler(message: types.Message):
+async def contacts_handler(message: Message):
     await message.answer(CONTACTS_TEXT, reply_markup=back_menu(), protect_content=True)
 
 @dp.message_handler(Text(equals=BACK_BTN))
-async def back_handler(message: types.Message):
+async def back_handler(message: Message):
     await message.answer("Возвращаемся назад.", reply_markup=case_options_menu(), protect_content=True)
 
 @dp.message_handler(Text(equals=EXIT_BTN))
-async def exit_handler(message: types.Message):
+async def exit_handler(message: Message):
     await message.answer(EXIT_TEXT, reply_markup=ReplyKeyboardRemove(), protect_content=True)
 
 # --- Запуск бота ---
