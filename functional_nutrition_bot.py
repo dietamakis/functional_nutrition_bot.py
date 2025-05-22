@@ -1,7 +1,6 @@
 import os
 import logging
-
-import logging
+import datetime
 
 logging.basicConfig(level=logging.INFO)  # Настройка логирования
 
@@ -99,17 +98,25 @@ async def btn4_handler(message: Message):
 async def show_submenu_1(message: Message):
     await message.answer(READY_TEXT, reply_markup=step_menu(":"), protect_content=True)
     
-    # Добавляем отладочную информацию
-    logging.info(f"Попытка отправки фото: photo.jpg")
+    # Детальная отладка
+    logging.info(f"Начало обработки команды : в {datetime.datetime.now()}")
+    logging.info(f"Проверка существования файла photo.jpg")
     
     try:
+        # Проверяем, существует ли файл
+        if not os.path.exists("photo.jpg"):
+            logging.error(f"Файл photo.jpg не найден в директории: {os.getcwd()}")
+            await message.answer("Ошибка: файл photo.jpg не найден в текущей директории.", protect_content=True)
+            return
+        
+        logging.info(f"Файл photo.jpg найден, начинаем загрузку")
         photo = InputFile("photo.jpg")  # Указываем путь к файлу
         logging.info(f"Файл photo.jpg успешно загружен для отправки")
         await message.answer_photo(photo, caption="Таблица", protect_content=True)
-        logging.info(f"Фото успешно отправлено")
+        logging.info(f"Фото успешно отправлено в {datetime.datetime.now()}")
     except FileNotFoundError as e:
-        logging.error(f"Ошибка: файл photo.jpg не найден - {e}")
-        await message.answer("Ошибка: файл photo.jpg не найден. Убедитесь, что он загружен в репозиторий.", protect_content=True)
+        logging.error(f"Ошибка FileNotFoundError: {e}")
+        await message.answer(f"Ошибка: файл photo.jpg не найден - {e}", protect_content=True)
     except Exception as e:
         logging.error(f"Неизвестная ошибка при отправке фото: {e}")
         await message.answer(f"Ошибка при отправке фото: {e}", protect_content=True)
