@@ -4,6 +4,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils import executor
 from aiogram.dispatcher.filters import Text
+from aiogram.types import InputFile
 
 API_TOKEN = os.getenv("API_TOKEN")
 
@@ -390,21 +391,14 @@ async def btn3_handler(message: types.Message):
 async def btn4_handler(message: types.Message):
     await message.answer(READY_TEXT, reply_markup=step_menu(BTN_5), protect_content=True)
 
-@dp.message_handler(Text(equals=BTN_SEND_PHOTO))
-async def send_photo_handler(message: types.Message):
-    # Отправляем фотографию
-    photo_path = "photo.jpg"  # Укажите путь к вашей фотографии
-    try:
-        with open(photo_path, "rb") as photo:
-            await bot.send_photo(
-                chat_id=message.chat.id,
-                photo=photo,
-                caption=PHOTO_SENT_TEXT,
-                protect_content=True
-            )
-    except FileNotFoundError:
-        await message.answer("Фотография не найдена. Убедитесь, что файл 'photo.jpg' существует.", protect_content=True)
-
+@dp.message_handler(Text(equals=":"))
+async def show_submenu_1(message: types.Message):
+    await message.answer(READY_TEXT, reply_markup=submenu_1)
+    
+    # Отправка картинки сразу после текста
+    photo = InputFile("img/pitanie.jpg")  # путь к файлу
+    await message.answer_photo(photo, caption="Таблица", protect_content=True)
+    
 @dp.message_handler(Text(equals=BTN_5))
 async def btn5_handler(message: types.Message):
     await message.answer(CHOOSE_CASE_TEXT, reply_markup=case_menu(), protect_content=True)
