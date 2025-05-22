@@ -1,10 +1,9 @@
 import os
 import logging
-from aiogram import Bot, Dispatcher, types
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram import Bot, Dispatcher
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InputFile, ReplyKeyboardRemove
 from aiogram.utils import executor
 from aiogram.dispatcher.filters import Text
-from aiogram.types import InputFile
 
 API_TOKEN = os.getenv("API_TOKEN")
 
