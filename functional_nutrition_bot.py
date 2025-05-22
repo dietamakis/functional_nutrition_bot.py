@@ -1,5 +1,10 @@
 import os
 import logging
+
+import logging
+
+logging.basicConfig(level=logging.INFO)  # Настройка логирования
+
 from aiogram import Bot, Dispatcher
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InputFile, ReplyKeyboardRemove
 from aiogram.utils import executor
@@ -94,12 +99,20 @@ async def btn4_handler(message: types.Message):
 async def show_submenu_1(message: types.Message):
     await message.answer(READY_TEXT, reply_markup=step_menu(":"), protect_content=True)
     
-    # Отправка картинки (используем photo.jpg из корня репозитория)
+    # Добавляем отладочную информацию
+    logging.info(f"Попытка отправки фото: photo.jpg")
+    
     try:
-        photo = InputFile("photo.jpg")  # Указываем правильный путь
+        photo = InputFile("photo.jpg")  # Указываем путь к файлу
+        logging.info(f"Файл photo.jpg успешно загружен для отправки")
         await message.answer_photo(photo, caption="Таблица", protect_content=True)
-    except FileNotFoundError:
+        logging.info(f"Фото успешно отправлено")
+    except FileNotFoundError as e:
+        logging.error(f"Ошибка: файл photo.jpg не найден - {e}")
         await message.answer("Ошибка: файл photo.jpg не найден. Убедитесь, что он загружен в репозиторий.", protect_content=True)
+    except Exception as e:
+        logging.error(f"Неизвестная ошибка при отправке фото: {e}")
+        await message.answer(f"Ошибка при отправке фото: {e}", protect_content=True)
     
 @dp.message_handler(Text(equals=BTN_5))
 async def btn5_handler(message: types.Message):
