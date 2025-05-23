@@ -1,14 +1,27 @@
 import os
+import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, Message
 from aiogram.utils import executor
 from aiogram.dispatcher.filters import Text
 
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+
 # --- Проверка токена ---
 API_TOKEN = os.getenv("API_TOKEN")
 if not API_TOKEN:
     raise ValueError("Переменная окружения API_TOKEN не установлена! Убедитесь, что вы добавили её в настройки среды (например, на Render.com).")
+
+# --- Проверка WEBHOOK_HOST ---
+WEBHOOK_HOST = os.getenv("WEBHOOK_HOST")
+if not WEBHOOK_HOST:
+    raise ValueError("Переменная окружения WEBHOOK_HOST не установлена! Убедитесь, что вы добавили её в настройки среды (например, на Render.com).")
+
+# --- Проверка порта ---
+PORT = int(os.getenv("PORT", 10000))
+logging.info(f"Используется порт: {PORT}")
 
 # --- Кнопки ---
 BTN_1 = "Да! Начнем!"
@@ -162,9 +175,9 @@ async def exit_handler(message: Message):
     await message.answer(EXIT_TEXT, reply_markup=ReplyKeyboardRemove(), protect_content=True)
 
 # --- Настройка вебхуков ---
-WEBHOOK_HOST = os.getenv("WEBHOOK_HOST")  # Укажите ваш URL от Render.com, например, "https://your-service.onrender.com"
 WEBHOOK_PATH = "/webhook"
 WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+logging.info(f"Устанавливается вебхук: {WEBHOOK_URL}")
 
 async def on_startup(_):
     await bot.set_webhook(WEBHOOK_URL)
@@ -183,5 +196,5 @@ if __name__ == '__main__':
         on_shutdown=on_shutdown,
         skip_updates=True,
         host="0.0.0.0",
-        port=int(os.getenv("PORT", 10000))  # Render.com обычно задает PORT автоматически
+        port=PORT  # Используем PORT из переменной
     )
