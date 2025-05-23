@@ -5,7 +5,9 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemo
 from aiogram.utils import executor
 from aiogram.dispatcher.filters import Text
 
-bot = Bot(token=os.getenv("BOT_TOKEN"))
+API_TOKEN = os.getenv("API_TOKEN")
+
+bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
 # --- Тексты ---
